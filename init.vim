@@ -77,7 +77,7 @@ call plug#begin()
 
     Plug 'tpope/vim-commentary'
    
-    Plug 'tpope/vim-vinegar'
+    Plug 'tpope/vim-vinegar'
   " }}}
 
   " Sessions {{{
@@ -285,8 +285,8 @@ call plug#begin()
     endfunction
     augroup update_pyls_python_executable
       autocmd!
-      autocmd CmdlineLeave : if !v:event.abort && @: =~# 'VirtualEnvActivate' | let g:LanguageClient_serverCommands.python[0] = expand(s:get_venv_directory().'/Scripts/python') | endif
-      autocmd CmdlineLeave : if !v:event.abort && @: =~# 'VirtualEnvDeactivate' | let g:LanguageClient_serverCommands.python[0] = 'python' | endif
+      autocmd CmdlineLeave : if !v:event.abort && @: =~# 'VirtualEnvActivate' | let g:LanguageClient_serverCommands.python[0] = expand(s:get_venv_directory().'/Scripts/python') | let v:event.abort = 1 | endif
+      autocmd CmdlineLeave : if !v:event.abort && @: =~# 'VirtualEnvDeactivate' | let g:LanguageClient_serverCommands.python[0] = 'python' | let v:event.abort = 1 | endif
     augroup end
     " }}}
     " Tests running {{{
@@ -328,7 +328,6 @@ call plug#begin()
       \ },
       \ 'component_visible_condition': {
       \   'trunc': 0,
-      \   'venv': '!empty(<SNR>1_get_venv_name())',
       \ },
       \ 'component_type': {
       \   'trunc': 'raw',
@@ -339,7 +338,7 @@ call plug#begin()
       \   'session': '<SNR>1_statusline_session',
       \   'file_info': '<SNR>1_statusline_file_info',
       \   'location': '<SNR>1_statusline_location',
-      \   'venv': '<SNR>1_get_venv_name',
+      \   'venv': '<SNR>1_statusline_venv_name',
       \ },
       \ 'tab_component_function': {
       \   'tabinfo': '<SNR>1_tabline_tabinfo',
@@ -400,6 +399,13 @@ call plug#begin()
         return '$['.l:session_name.']'
       endif
     endfunction " }}}
+    function! s:statusline_venv_name() " {{{
+      let l:venv = s:get_venv_name()
+      if !empty(l:venv)
+        return '<'.l:venv.'>'
+      endif
+      return ''
+    endfunction
     function! s:statusline_file_info() " {{{
       let l:filetype = '['.&filetype.']'
       if &filetype ==# 'help'
