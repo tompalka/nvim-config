@@ -405,7 +405,7 @@ call plug#begin()
         return '<'.l:venv.'>'
       endif
       return ''
-    endfunction
+    endfunction " }}}
     function! s:statusline_file_info() " {{{
       let l:filetype = '['.&filetype.']'
       if &filetype ==# 'help'
