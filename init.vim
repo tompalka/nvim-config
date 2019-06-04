@@ -250,6 +250,7 @@ call plug#begin()
     " IMPORTANT: :help Ncm2PopupOpen for more information
     set completeopt=noinsert,menuone,noselect
     inoremap <silent> <buffer> <expr> <tab> (pumvisible() ? ncm2_ultisnips#expand_or("\<tab>", 'n') : "\<tab>")
+    set shortmess+=c
     " }}}
     " Project structure support {{{
     Plug 'tpope/vim-projectionist'
