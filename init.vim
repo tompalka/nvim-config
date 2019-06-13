@@ -286,8 +286,16 @@ call plug#begin()
     endfunction
     augroup update_pyls_python_executable
       autocmd!
-      autocmd CmdlineLeave : if !v:event.abort && @: =~# 'VirtualEnvActivate' | let g:LanguageClient_serverCommands.python[0] = expand(s:get_venv_directory().'/Scripts/python') | let v:event.abort = 1 | endif
-      autocmd CmdlineLeave : if !v:event.abort && @: =~# 'VirtualEnvDeactivate' | let g:LanguageClient_serverCommands.python[0] = 'python' | let v:event.abort = 1 | endif
+      autocmd CmdlineLeave : if getcmdline() =~# 'VirtualEnvActivate' && !v:event.abort |
+        \ execute(getcmdline()) |
+        \ let g:LanguageClient_serverCommands['python'][0] = expand(s:get_venv_directory().'/Scripts/python') |
+        \ let v:event.abort = 1 |
+        \ endif
+      autocmd CmdlineLeave : if getcmdline() =~# 'VirtualEnvDeactivate' && !v:event.abort |
+        \ execute(getcmdline()) |
+        \ let g:LanguageClient_serverCommands['python'][0] = 'python' |
+        \ let v:event.abort = 1 |
+        \ endif
     augroup end
     " }}}
     " Tests running {{{
